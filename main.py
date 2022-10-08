@@ -8,20 +8,7 @@ from evento import*
 
 import os
 import time
-
-global prioridade_baixa
-prioridade_baixa = []
-
-global prioridade_moderada
-prioridade_moderada = []
-
-global prioridade_elevada
-prioridade_elevada = []
-
-global prioridade_absoluta
-prioridade_absoluta = []
-
-
+import pathlib
 
 #MENU INICIAL OTIMIZE+ - PRÉ LOGIN
 def menu():
@@ -79,7 +66,7 @@ def menu():
           returning()
         
       elif escolha > 3:    
-        
+        raise Exception("Opção inválida.")
         
   
 
@@ -93,26 +80,45 @@ def planner():
   if quest == 1:
       os.system("clear")
       conectado()
-      evento.consultarEvento()
-      comeBack()
+      verificarArq()
+
+      if contar == 0:
+        os.system("clear")
+        conectado()
+        print("Não há eventos agendados.")
+        comeBack()
+        
+      else:
+        evento.consultarEvento()
+        comeBack()
     
-      print("Não há eventos agendados.")
-      returning()
     
   elif quest == 2:
       os.system("clear")
       conectado()
       evento.adicionarEvento()
+      evento.definirPrioridade()
+      os.system("clear")
       planner()
+
     
   elif quest == 3:
       os.system("clear")
       conectado()
-      print('\033[4;49;34mDigite o número do evento de acordo com a ordem que aparece abaixo.\n\033[m')
-      evento.consultarEvento()
-      evento.excluirEvento()
-         
-      
+    
+      verificarArq()
+      if contar == 0:
+        os.system("clear")
+        conectado()
+        print("Não há eventos agendados.")
+        comeBack()
+        
+      else:
+        print('\033[0;49;34mDigite o N° do evento de acordo com a ordem abaixo: \033[m')
+        evento.consultarEvento()
+        evento.excluirEvento()
+        comeBack()   
+        
   elif quest == 4:
       os.system("clear")
       conectado()
@@ -136,21 +142,29 @@ def planner():
       elif opcoes == "":
         os.system("clear")
         planner()
-
-
+  
   elif quest == 5:
       os.system("clear")
       conectado()
       calen.exibirCalendario()
+    
   
 #VERIFICAÇÃO DE EXISTÊNCIA DE ARQUIVOS
 def verificarArq():
-  cont = 0
+  global contar
+  contar = 0
   from usuario import solicitarID
-  for diretorios, subpastas, arquivos in os.walk("./bdAtividades/bdUsuario" + str(solicitarID)):
-    for file in arquivos:
-      cont + 1
 
+  for file in pathlib.Path("./bdAtividades/bdUsuario" + str(solicitarID)).iterdir():
+      if file.is_file():
+          contar += 1
+
+  if contar == 0:
+    print("Eventos não encontrados.")
+    
+  else:
+    pass
+    
 #QUAL USUÁRIO ESTÁ UTILIZANDO O PLANNER?    
 def conectado():
   from usuario import conectado

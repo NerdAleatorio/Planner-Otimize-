@@ -28,7 +28,7 @@ class Evento:
           file.seek(0,0)
           file.close()
 
-        os.system("clear")
+        
 
     
   def editarEvento(self):
@@ -42,7 +42,7 @@ class Evento:
         with open('./bdAtividades/bdUsuario' + str(solicitarID) + '/atvUsuario' + str(solicitarID) + '.txt', 'r') as file:
           line = file.readlines()
 
-        print("Evento: {}Data: {}Hora: {}Local: {}".format(line[0], line[1], line[2], line[3]))
+        print("Evento: {}Data: {}Hora: {}Local: {}Prioridade: {}".format(line[0], line[1], line[2], line[3], line[4]))
   
         
   def excluirEvento(self):
@@ -55,4 +55,27 @@ class Evento:
             os.remove("./bdAtividades/bdUsuario" + str(solicitarID) + "/atvUsuario" + str(delArquivo) + ".txt")
   
         print("Evento excluído.")
+
+  def definirPrioridade(self):
+    from usuario import solicitarID
+
+    print("Determine o nível de prioridade do  seu evento: \n")
+    prioridade = int(input("1.Baixa \n2.Moderada \n3.Elevada \n4.Absoluta \n----> "))
     
+    if prioridade == 1:
+      self.prioridadeEvento = "Baixa"
+
+    elif prioridade == 2:
+      self.prioridadeEvento = "Moderada"
+
+    elif prioridade == 3:
+      self.prioridadeEvento = "Elevada"
+
+    elif prioridade == 4:
+      self.prioridadeEvento = "Absoluta"
+
+    
+    with open('./bdAtividades/bdUsuario' + str(solicitarID) + '/atvUsuario' + str(solicitarID) + '.txt', 'a') as file:
+              file.write("\n" + self.prioridadeEvento)
+              file.seek(0,0)
+              file.close()
